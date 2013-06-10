@@ -7,19 +7,24 @@ class User < ActiveRecord::Base
   validates :last_name, :presence => true
 
   validates :username,
-            :presence => true,
-            :length => {:minimum => 2, :maximum => 32},
-            :format => {:with => /^\w+$/},
-            :uniqueness => {:case_sensitive => false}
+  :presence => true,
+  :length => {:minimum => 2, :maximum => 32},
+  :format => {:with => /^\w+$/},
+  :uniqueness => {:case_sensitive => false}
 
   validates :email,
-            :presence => true,
-            :format => {:with => /^[\w+\-.]+@[a-z\d\-.]+\.[a-z]+$/i},
-            :uniqueness => {:case_sensitive => false}
+  :presence => true,
+  :format => {:with => /^[\w+\-.]+@[a-z\d\-.]+\.[a-z]+$/i},
+  :uniqueness => {:case_sensitive => false}
+
 
   def self.by_karma
-    joins(:karma_points).group('users.id').order('SUM(karma_points.value) DESC')
+    order('total_points DESC')
   end
+
+  # def self.by_karma
+  #   joins(:karma_points).group('users.id').order('total_points.value) DESC')
+  # end
 
   def total_karma
     self.karma_points.sum(:value)
@@ -28,4 +33,7 @@ class User < ActiveRecord::Base
   def full_name
     "#{first_name} #{last_name}"
   end
+
+  
+
 end
